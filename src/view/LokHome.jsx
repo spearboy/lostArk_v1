@@ -1,15 +1,5 @@
-// src/view/common/LokHome.jsx
 import React, { useState } from 'react';
 import { fetchCharacter } from '../api';
-import {
-    Box,
-    TextField,
-    Button,
-    Typography,
-    Paper,
-    Alert,
-    Stack,
-} from '@mui/material';
 
 const LokHome = () => {
     const [name, setName] = useState('');
@@ -28,21 +18,28 @@ const LokHome = () => {
     };
 
     return (
-        <>
-            <Box p={4}>
-                <Stack direction="row" spacing={2} alignItems="center">
-                    <TextField
-                        label="캐릭터명"
-                        variant="outlined"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <Button variant="contained" onClick={handleSearch}>
-                        조회
-                    </Button>
-                </Stack>
-            </Box>
+        <div>
+            {/* 검색창 */}
+            <div>
+                <input
+                    type="text"
+                    placeholder="캐릭터명"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
+                <button onClick={handleSearch}>
+                    조회
+                </button>
+            </div>
 
+            {/* 오류 메시지 */}
+            {error && (
+                <div>
+                    {typeof error === 'string' ? error : JSON.stringify(error)}
+                </div>
+            )}
+
+            {/* 캐릭터 정보 */}
             {data && (
                 <>
                     <div>
@@ -52,16 +49,35 @@ const LokHome = () => {
                         <div>길드: {data.ArmoryProfile.GuildName}</div>
                         <div>길드 직책: {data.ArmoryProfile.GuildMemberGrade}</div>
                     </div>
+
                     <div>
                         <p>마지막 엑세스 아바타</p>
-                        <div><img src={data.ArmoryProfile.CharacterImage} /></div>
+                        <img src={data.ArmoryProfile.CharacterImage} alt="Avatar" />
                     </div>
+
                     <div>
-                        <div>스킬 포인트: {data.ArmoryProfile.TotalSkillPoint}/{data.ArmoryProfile.UsingSkillPoint}</div>
+                        스킬 포인트: {data.ArmoryProfile.TotalSkillPoint}/{data.ArmoryProfile.UsingSkillPoint}
+                    </div>
+
+                    <div>
+                        <h2>스탯 정보</h2>
+                        <div>
+                            {data.ArmoryProfile.Stats.map((stat) => (
+                                <div key={stat.Type}>
+                                    <div>{stat.Type}</div>
+                                    <div>{stat.Value}</div>
+                                    <div>
+                                        {stat.Tooltip.map((t, i) => (
+                                            <div key={i} dangerouslySetInnerHTML={{ __html: t }} />
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </>
             )}
-        </>
+        </div>
     );
 };
 
