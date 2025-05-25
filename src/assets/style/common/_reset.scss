@@ -37,11 +37,42 @@ button {
 
 .tooltip_wrap {
     position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    color: #fff;
 
     .tooltip {
         position: absolute;
-        top: 50%;
+        top: 100%;
+        left: 0px;
+        z-index: 1;
         width: 300px;
-        display: none;
+        height: 300px;
+        padding: 10px;
+        transform: scale(0);
+        background-color: #2c2c2c;
+        border-radius: 10px;
+        overflow: auto;
+        border: 1px solid #fff;
+    }
+
+    div:first-child {
+        width: auto;
+        min-width: 100px;
+        color: #fff;
+    }
+
+    div:nth-child(2) {
+        width: auto;
+        color: #534dff;
+        cursor: pointer;
+
+        &:hover {
+            +.tooltip {
+                transform: scale(1);
+            }
+        }
     }
 }
