@@ -67,32 +67,38 @@ const LokHome = () => {
                         </div>
                     </div>
                     <div>
-                        스킬 포인트: {data.ArmoryProfile.TotalSkillPoint}/{data.ArmoryProfile.UsingSkillPoint}
+
                     </div>
 
                     <div>
                         <h2>스탯 정보</h2>
-                        {data.ArmoryProfile.Stats.map((stat) => (
-                            <div key={stat.Type} className='tooltip_wrap'>
-                                <div>{stat.Type}</div>
-                                <div>{stat.Value}</div>
-                                {stat.Tooltip && (
-                                    <div className='tooltip'>
-                                        {stat.Tooltip.map((t, i) => (
-                                            <div key={i} dangerouslySetInnerHTML={{ __html: t }} />
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                        스킬 포인트: {data.ArmoryProfile.TotalSkillPoint}/{data.ArmoryProfile.UsingSkillPoint}
+                        <div className='stat_wrap'>
 
-                        {radarValues.length > 0 && (
-                            <RadarChart
-                                height={300}
-                                series={[{ label: name, data: radarValues }]}
-                                radar={{ metrics: radarMetrics, max: maxValue }}
-                            />
-                        )}
+                            <div>
+                                {data.ArmoryProfile.Stats.map((stat) => (
+                                    <div key={stat.Type} className='tooltip_wrap'>
+                                        <div>{stat.Type}</div>
+                                        <div>{stat.Value}</div>
+                                        {stat.Tooltip && (
+                                            <div className='tooltip'>
+                                                {stat.Tooltip.map((t, i) => (
+                                                    <div key={i} dangerouslySetInnerHTML={{ __html: t }} />
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {radarValues.length > 0 && (
+                                <RadarChart
+                                    height={300}
+                                    series={[{ label: name, data: radarValues }]}
+                                    radar={{ metrics: radarMetrics, max: maxValue }}
+                                />
+                            )}
+                        </div>
                     </div>
 
                     <div>
