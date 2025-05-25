@@ -21,28 +21,17 @@ const LokHome = () => {
 
     // Radar chart metrics
     const radarMetrics = ['치명', '특화', '신속', '제압', '인내', '숙련'];
-    // Parse values
+    // Parse values and determine max
     const radarValues = data
         ? radarMetrics.map((key) => {
             const stat = data.ArmoryProfile.Stats.find((s) => s.Type === key);
             if (!stat) return 0;
+            // Remove non-numeric characters (e.g., '%', commas) for parsing
             const num = parseFloat(stat.Value.replace(/[^0-9.]/g, ''));
             return isNaN(num) ? 0 : num;
         })
         : [];
-    // Determine max for scale
     const maxValue = radarValues.length ? Math.max(...radarValues) : 100;
-
-    // Determine top two metrics for label
-    let radarLabel = '';
-    if (radarValues.length) {
-        const pairs = radarMetrics.map((m, i) => ({ key: m, value: radarValues[i] }));
-        const sorted = pairs.sort((a, b) => b.value - a.value);
-        const [first, second] = sorted;
-        // If first is abnormally higher than second (e.g., >10x), prefix with '극'
-        const prefix = first.value > second.value * 10 ? '극' : '';
-        radarLabel = `${prefix}${first.key},${second.key}`;
-    }
 
     return (
         <div className="char_wrap">
@@ -63,19 +52,20 @@ const LokHome = () => {
             {/* 캐릭터 정보 */}
             {data && (
                 <>
-                    <div>
-                        <div>캐릭터 레벨: {data.ArmoryProfile.TownLevel}</div>
-                        <div>영지: {data.ArmoryProfile.TownName}</div>
-                        <div>현재 칭호: {data.ArmoryProfile.Title}</div>
-                        <div>길드: {data.ArmoryProfile.GuildName || '없음'}</div>
-                        <div>길드 직책: {data.ArmoryProfile.GuildMemberGrade || '없음'}</div>
-                    </div>
+                    <div className='char_info_wrap'>
+                        <div className='char_info'>
+                            <div>캐릭터 레벨: {data.ArmoryProfile.TownLevel}</div>
+                            <div>영지: {data.ArmoryProfile.TownName}</div>
+                            <div>현재 칭호: {data.ArmoryProfile.Title}</div>
+                            <div>길드: {data.ArmoryProfile.GuildName || '없음'}</div>
+                            <div>길드 직책: {data.ArmoryProfile.GuildMemberGrade || '없음'}</div>
+                        </div>
 
-                    <div>
-                        <p>마지막 엑세스 아바타</p>
-                        <div><img src={data.ArmoryProfile.CharacterImage} alt="Avatar" /></div>
+                        <div className='char_info_png'>
+                            <p>마지막 엑세스 아바타</p>
+                            <div><img src={data.ArmoryProfile.CharacterImage} alt="Avatar" /></div>
+                        </div>
                     </div>
-
                     <div>
                         스킬 포인트: {data.ArmoryProfile.TotalSkillPoint}/{data.ArmoryProfile.UsingSkillPoint}
                     </div>
@@ -83,11 +73,11 @@ const LokHome = () => {
                     <div>
                         <h2>스탯 정보</h2>
                         {data.ArmoryProfile.Stats.map((stat) => (
-                            <div key={stat.Type}>
+                            <div key={stat.Type} className='tooltip_wrap'>
                                 <div>{stat.Type}</div>
                                 <div>{stat.Value}</div>
                                 {stat.Tooltip && (
-                                    <div>
+                                    <div className='tooltip'>
                                         {stat.Tooltip.map((t, i) => (
                                             <div key={i} dangerouslySetInnerHTML={{ __html: t }} />
                                         ))}
@@ -99,12 +89,11 @@ const LokHome = () => {
                         {radarValues.length > 0 && (
                             <RadarChart
                                 height={300}
-                                series={[{ label: radarLabel, data: radarValues }]}
+                                series={[{ label: name, data: radarValues }]}
                                 radar={{ metrics: radarMetrics, max: maxValue }}
                             />
                         )}
                     </div>
-
 
                     <div>
                         <h2>아바타</h2>
